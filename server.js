@@ -17,11 +17,23 @@ const auth = require('./controllers/authorization');
 //   connection: process.env.POSTGRES_URI
 // });
 
+var whitelist = ['http://localhost:3000', 'http://localhost:3001']
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
+
 const db = pgdatabase;
 
 const app = express();
 
-app.use(cors())
+app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res)=> { res.send("It's working") })
@@ -33,6 +45,7 @@ app.put('/image', auth.requireAuth, (req, res) => { image.handleImage(req, res, 
 app.post('/imageurl', auth.requireAuth, (req, res) => { image.handleApiCall(req, res)})
 app.delete('/signout', auth.requireAuth, (req, res) => { profile.handleProfileSignout(req, res)} )
 
-app.listen(3001, ()=> {
-  console.log('app is running on port 3001');
+
+app.listen(process.env.PORT || 5000, () => {
+  console.log('app is running');
 })
