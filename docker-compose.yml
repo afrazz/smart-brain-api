@@ -1,0 +1,34 @@
+version: '3.6'
+
+services:
+  smart-brain-api:
+    build: ./
+    working_dir: /usr/src/smart-brain-api 
+    command: npm start
+    environment: 
+      POSTGRES_URI: 'postgres://afraz:secret@192.168.99.100:5432/smart-brain-docker-2'
+      REDIS_URI: redis://redis:6379
+    ports:
+      - '3001:3001'
+    volumes:
+      - ./:/usr/src/smart-brain-api 
+    links:
+      - smart-brain-postgres
+      - smart-brain-redis
+    
+  # Postgres
+  smart-brain-postgres:
+    build: ./postgres
+    environment: 
+      POSTGRES_USER: 'afraz'
+      POSTGRES_PASSWORD: 'secret'
+      POSTGRES_DB: 'smart-brain-docker-2'
+      POSTGRES_HOST: smart-brain-postgres
+    ports:
+      - '5432:5432'
+
+  # Redis
+  smart-brain-redis:
+    image: redis
+    ports: 
+      - '6379:6379'
