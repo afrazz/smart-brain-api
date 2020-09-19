@@ -7,7 +7,7 @@ const db = knex({
 
 // Redis
 const redis = require('redis');
-const redisClient = redis.createClient({host: '192.168.99.100'});
+const redisClient = redis.createClient(process.env.REDIS_URI);
 
 module.exports = {
     db,
